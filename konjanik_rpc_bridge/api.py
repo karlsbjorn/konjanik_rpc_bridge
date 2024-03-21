@@ -1,7 +1,17 @@
 import json
+import os
 
 import websockets
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.security import APIKeyHeader
+
+
+X_API_KEY = APIKeyHeader(name="X-API-Key")
+
+
+def api_key_auth(x_api_key: str = Depends(X_API_KEY)):
+    if x_api_key != os.environ["API_KEY"]:
+        raise HTTPException(status_code=401, detail="No")
 
 
 async def rpc_call(method: str, params: list) -> dict:
@@ -18,10 +28,10 @@ async def rpc_call(method: str, params: list) -> dict:
         return json.loads(response)
 
 
-app = FastAPI(openapi_url="/konjanik/openapi.json")
+app = FastAPI(title="Konjanik API", openapi_url="/konjanik/openapi.json")
 
 
-@app.get("/konjanik/get-current-track")
+@app.get("/konjanik/get-current-track", dependencies=[Depends(api_key_auth)])
 async def get_current_track(guild_id: int):
     return (
         await rpc_call(
@@ -31,3 +41,13 @@ async def get_current_track(guild_id: int):
             ],
         )
     ).get("result")
+
+
+@app.post("/konjanik/play-next-track", dependencies=[Depends(api_key_auth)])
+async def play_next_track(guild_id: int):
+    return await rpc_call(
+        "KONJANIKTOOLS__PLAY_NEXT_TRACK",
+        [
+            guild_id,
+        ],
+    )
