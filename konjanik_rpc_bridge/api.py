@@ -35,7 +35,7 @@ app = FastAPI(title="Konjanik API", openapi_url="/konjanik/openapi.json")
 async def get_current_track(guild_id: int):
     return (
         await rpc_call(
-            "KONJANIKTOOLS__GET_CURRENT_TRACK",
+            "PYLAVRPC__GET_CURRENT_TRACK",
             [
                 guild_id,
             ],
@@ -43,11 +43,26 @@ async def get_current_track(guild_id: int):
     ).get("result")
 
 
+@app.post("/konjanik/play-track", dependencies=[Depends(api_key_auth)])
+async def play_track(guild_id: int, query: str):
+    return (
+        await rpc_call(
+            "PYLAVRPC__PLAY_TRACK",
+            [
+                guild_id,
+                query,
+            ],
+        )
+    ).get("result")
+
+
 @app.post("/konjanik/play-next-track", dependencies=[Depends(api_key_auth)])
 async def play_next_track(guild_id: int):
-    return await rpc_call(
-        "KONJANIKTOOLS__PLAY_NEXT_TRACK",
-        [
-            guild_id,
-        ],
-    )
+    return (
+        await rpc_call(
+            "PYLAVRPC__PLAY_NEXT",
+            [
+                guild_id,
+            ],
+        )
+    ).get("result")
