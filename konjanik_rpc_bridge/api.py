@@ -66,3 +66,15 @@ async def play_next_track(guild_id: int):
             ],
         )
     ).get("result")
+
+
+@app.get("/konjanik/adventure/get-user-profile")
+async def get_user_profile(user_id: int):
+    return (
+        await rpc_call(
+            "KONJANIKTOOLS__ADVENTURE_GET_USER_PROFILE",
+            [
+                user_id,
+            ],
+        )
+    ).get("result")
