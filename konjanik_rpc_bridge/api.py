@@ -78,7 +78,7 @@ async def play_next_track(guild_id: int):
 async def get_user_profile(user_id: int):
     result = (
         await rpc_call(
-            "PYLAVRPC__PLAY_NEXT",
+            "KONJANIKTOOLS__ADVENTURE_GET_USER_PROFILE",
             [
                 user_id,
             ],
