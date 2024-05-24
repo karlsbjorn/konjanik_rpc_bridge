@@ -33,7 +33,7 @@ app = FastAPI(title="Konjanik API", openapi_url="/konjanik/openapi.json")
 
 @app.get("/konjanik/get-current-track", dependencies=[Depends(api_key_auth)])
 async def get_current_track(guild_id: int):
-    return (
+    result = (
         await rpc_call(
             "PYLAVRPC__GET_CURRENT_TRACK",
             [
@@ -41,24 +41,27 @@ async def get_current_track(guild_id: int):
             ],
         )
     ).get("result")
+    if (status := result.get("status")) and status != 200:
+        raise HTTPException(status_code=result, detail=result)
+    return result
 
 
 @app.post("/konjanik/play-track", dependencies=[Depends(api_key_auth)])
 async def play_track(guild_id: int, query: str):
-    return (
+    result = (
         await rpc_call(
             "PYLAVRPC__PLAY_TRACK",
-            [
-                guild_id,
-                query,
-            ],
+            [guild_id, query],
         )
     ).get("result")
+    if (status := result.get("status")) and status != 200:
+        raise HTTPException(status_code=result, detail=result)
+    return result
 
 
 @app.post("/konjanik/play-next-track", dependencies=[Depends(api_key_auth)])
 async def play_next_track(guild_id: int):
-    return (
+    result = (
         await rpc_call(
             "PYLAVRPC__PLAY_NEXT",
             [
@@ -66,15 +69,21 @@ async def play_next_track(guild_id: int):
             ],
         )
     ).get("result")
+    if (status := result.get("status")) and status != 200:
+        raise HTTPException(status_code=result, detail=result)
+    return result
 
 
 @app.get("/konjanik/adventure/get-user-profile")
 async def get_user_profile(user_id: int):
-    return (
+    result = (
         await rpc_call(
-            "KONJANIKTOOLS__ADVENTURE_GET_USER_PROFILE",
+            "PYLAVRPC__PLAY_NEXT",
             [
                 user_id,
             ],
         )
     ).get("result")
+    if (status := result.get("status")) and status != 200:
+        raise HTTPException(status_code=result, detail=result)
+    return result
