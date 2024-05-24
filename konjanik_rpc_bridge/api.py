@@ -42,7 +42,7 @@ async def get_current_track(guild_id: int):
         )
     ).get("result")
     if (status := result.get("status")) and status != 200:
-        raise HTTPException(status_code=result, detail=result)
+        raise HTTPException(status_code=status, detail=result)
     return result
 
 
@@ -55,7 +55,7 @@ async def play_track(guild_id: int, query: str):
         )
     ).get("result")
     if (status := result.get("status")) and status != 200:
-        raise HTTPException(status_code=result, detail=result)
+        raise HTTPException(status_code=status, detail=result)
     return result
 
 
@@ -70,7 +70,7 @@ async def play_next_track(guild_id: int):
         )
     ).get("result")
     if (status := result.get("status")) and status != 200:
-        raise HTTPException(status_code=result, detail=result)
+        raise HTTPException(status_code=status, detail=result)
     return result
 
 
@@ -85,5 +85,5 @@ async def get_user_profile(user_id: int):
         )
     ).get("result")
     if (status := result.get("status")) and status != 200:
-        raise HTTPException(status_code=result, detail=result)
+        raise HTTPException(status_code=status, detail=result)
     return result
